@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 class AuthController extends Controller
 {
@@ -17,7 +18,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'logincpf']]);
     }
 
     /**
@@ -29,6 +30,21 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
+        if (! $token = auth('api')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return $this->respondWithToken($token);
+    }
+
+    public function loginCpf(Request $request)
+    {
+        if($request->cpf && $request->password ){
+            return response()->json(['error' => 'Ausencia de dados'], 401);
+        }
+        $dados =  User::where('cpf', $request->cpf)->first();
+        $credentials = ['email'=> $dados->email, 'password'=>$request->password];
+        //dd(auth('api')->attempt($credentials));
         if (! $token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -55,7 +71,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'Você saiu com sucesso']);
     }
 
     /**
@@ -92,14 +108,19 @@ class AuthController extends Controller
             'string' => "Formato invalido para o campo :attribute",
             'name.min' => "Nome deve tem no minimo 3 caracteres",
             'password.min' => "Senha deve tem no minimo 8 caracteres",
-            'password.confirmed' => "Senha não coressponde",
+            'password.confirmed' => "Senha não corresponde",
             'email.required' => 'Email é obrigatório.',
+            'telefone.required'=> "Telefone Obrigatorio"
         ];
 
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255', 'min:3'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'numeric', 'min:8', 'confirmed'],
+            'telefone' => ['required', 'string'],
+            'cpf' => ['required'],
+            'altura'=> ['required'],
+            'datanasc' => ['required']
         ], $messages);
 
         if($validator->fails()){
@@ -122,6 +143,10 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'telefone' => $data['telefone'],
+            'cpf'=> $data['cpf'],
+            'altura'=> $data['altura'],
+            'datanasc'=> $data['datanasc']
         ]);
     }
 
