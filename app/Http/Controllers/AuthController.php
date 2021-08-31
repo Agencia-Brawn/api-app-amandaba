@@ -44,6 +44,9 @@ class AuthController extends Controller
         }
         $dados =  User::where('cpf', $request->cpf)->first();
 
+        if(!$dados){
+            return response()->json(['error' => 'Cpf não encontrado'], 401);
+        }
         $credentials = ['email'=> $dados->email, 'password'=>$request->password];
         if (! $token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
