@@ -18,7 +18,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'logincpf']]);
+       $this->middleware('auth:api', ['except' => ['login', 'register', 'loginCpf']]);
     }
 
     /**
@@ -39,17 +39,17 @@ class AuthController extends Controller
 
     public function loginCpf(Request $request)
     {
-        if($request->cpf && $request->password ){
+        if(!$request->cpf && !$request->password ){
             return response()->json(['error' => 'Ausencia de dados'], 401);
         }
         $dados =  User::where('cpf', $request->cpf)->first();
+
         $credentials = ['email'=> $dados->email, 'password'=>$request->password];
-        //dd(auth('api')->attempt($credentials));
         if (! $token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        return $this->respondWithToken($token); 
     }
 
     /**
