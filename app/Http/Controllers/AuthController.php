@@ -153,4 +153,9 @@ class AuthController extends Controller
         ]);
     }
 
+    public function reunioes()
+    {
+        dd(auth()->user()->unidade()->reunioes());
+    }
+
 }
