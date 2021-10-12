@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Usuario;
+use App\Models\Unidade;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -52,7 +53,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token); 
+        return $this->respondWithToken($token);
     }
 
     /**
@@ -155,7 +156,13 @@ class AuthController extends Controller
 
     public function reunioes()
     {
-        dd(auth()->user()->unidade()->reunioes());
+        $unidade = auth()->user()->unidade();
+        if($unidade){
+            return auth()->user()->unidade()->reunioes();
+        }else{
+            return [];
+        }
+
     }
 
 }
