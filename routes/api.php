@@ -17,6 +17,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('erro', function () {
+    response(['msg'=> "solicitação invalida"], 404);
+})->name('api.erro');
+
 Route::group([
 
     'middleware' => 'api',
@@ -32,5 +36,8 @@ Route::group([
     Route::post('register', 'AuthController@register');
 
     Route::post('reunioes', 'AuthController@reunioes');
+
+    //Endpoints para o modulo dos pés
+    Route::post('pes/registrosemanal', 'Api\PesController@registroSemanal');
 });
 
