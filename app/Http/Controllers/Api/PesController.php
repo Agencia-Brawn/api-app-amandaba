@@ -33,10 +33,10 @@ class PesController extends Controller
             'pe_sb_dir' => 'file|mimes:jpeg,png,jpg|max:3078',
         ]);
 
-        $pe_sp_esq = $this->salva($request->file('pe_sp_esq'));
-        $pe_sb_esq = $this->salva($request->file('pe_sb_esq'));
-        $pe_sp_dir = $this->salva($request->file('pe_sp_dir'));
-        $pe_sb_dir = $this->salva($request->file('pe_sb_dir'));
+        $pe_sp_esq = $this->salva($request->file('pe_sp_esq'), 'pe_sp_esq');
+        $pe_sb_esq = $this->salva($request->file('pe_sb_esq'), 'pe_sb_esq');
+        $pe_sp_dir = $this->salva($request->file('pe_sp_dir'), 'pe_sp_dir');
+        $pe_sb_dir = $this->salva($request->file('pe_sb_dir'), 'pe_sb_dir');
 
         $registro = $this->registro();
 
@@ -58,11 +58,11 @@ class PesController extends Controller
         return response()->json($registro, 201);
     }
 
-    protected function salva($file){
+    protected function salva($file, $name){
 
         if($file){
             $path = $file->storeAs(
-                'imgs/pes', time().'.'.$file->getClientOriginalExtension()
+                'imgs/pes', time()."_$name.".$file->getClientOriginalExtension()
             );
             return $path;
         }else{
