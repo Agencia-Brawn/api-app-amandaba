@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\RegistroPes;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 
 class PesController extends Controller
 {
+    protected $output;
    /**
      * Create a new AuthController instance.
      *
@@ -17,11 +19,13 @@ class PesController extends Controller
      */
     public function __construct()
     {
+       $this->output = new ConsoleOutput();
        $this->middleware('auth:api');
     }
 
     public function registroSemanal(Request $request)
     {
+        $this->writeln($request);
         $request->validate([
             'pe_sp_esq' => 'image|mimes:jpeg,png,jpg|max:2048',
             'pe_sb_esq' => 'image|mimes:jpeg,png,jpg|max:2048'
