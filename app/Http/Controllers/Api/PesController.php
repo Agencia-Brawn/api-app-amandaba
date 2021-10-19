@@ -25,7 +25,7 @@ class PesController extends Controller
 
     public function registroSemanal(Request $request)
     {
-        $this->writeln($request);
+        //$this->output->writeln($request);
         $request->validate([
             'pe_sp_esq' => 'file|mimes:jpeg,png,jpg|max:3078',
             'pe_sb_esq' => 'file|mimes:jpeg,png,jpg|max:3078',
