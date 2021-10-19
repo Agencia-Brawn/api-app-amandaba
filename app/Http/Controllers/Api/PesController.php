@@ -60,8 +60,8 @@ class PesController extends Controller
 
     protected function salva($file, $name){
 
-        $filename = time()."_$name.".$file->getClientOriginalExtension();
         if($file){
+            $filename = time()."_$name.".$file->getClientOriginalExtension();
             $path = $file->storeAs(
                 'public/imgs/pes', $filename
             );
