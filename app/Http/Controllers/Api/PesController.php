@@ -60,19 +60,21 @@ class PesController extends Controller
 
     protected function salva($file, $name){
 
+        $filename = time()."_$name.".$file->getClientOriginalExtension();
         if($file){
             $path = $file->storeAs(
-                'imgs/pes', time()."_$name.".$file->getClientOriginalExtension()
+                'public/imgs/pes', $filename
             );
-            return $path;
+            return $filename;
         }else{
             return false;
         }
     }
 
-    protected function valida($pathImagem)
+    protected function valida($filename)
     {
-        if(Storage::exists($pathImagem)){
+        $path = 'public/imgs/pes/';
+        if(Storage::exists($filename)){
             return true;
         }
         return false;
